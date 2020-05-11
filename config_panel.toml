@@ -1,0 +1,93 @@
+version = "0.1"
+name = "VPN Client configuration panel"
+
+[main]
+name = "VPN Client Configuration"
+
+
+    [main.service]
+    name = "Service"
+
+        [main.service.enabled]
+        ask = "To enable your VPN fill the configuration and start the service <a href='/yunohost/admin/#/services/ynh-vpnclient-checker'>ynh-vpnclient-checker</a>"
+        type = "display_text"
+
+    [main.cube]
+    name = "Auto Configuration"
+        
+        [main.cube.file]
+        ask = "Update Server CA"
+        type = "file"
+        default = ""
+
+    [main.vpn]
+    name = "VPN"
+        
+        [main.vpn.host]
+        ask = "Server Address"
+        type = "string"
+        default = ""
+        
+        [main.vpn.port]
+        ask = "Server Port"
+        type = "string"
+        default = "443"
+        
+        [main.vpn.proto]
+        ask = "Protocol"
+        choices = ["udp", "tcp"]
+        default = "udp"
+        
+        [main.vpn.ip6_net]
+        ask = "Delegated prefix (IPv6)"
+        type = "string"
+        default = ""
+
+    [main.auth]
+    name = "Authentication"
+        
+        [main.auth.server_ca]
+        ask = "Update Server CA"
+        type = "file"
+        default = ""
+        
+        [main.auth.crt]
+        ask = "Update Client Certificate"
+        type = "file"
+        default = ""
+        
+        [main.auth.key]
+        ask = "Update Client Key"
+        type = "file"
+        default = ""
+        help = "This file begins with -----BEGIN PRIVATE KEY-----"
+        
+        [main.auth.ta]
+        ask = "Upload Shared-Secret"
+        type = "file"
+        default = ""
+        
+        [main.auth.username]
+        ask = "Username"
+        type = "string"
+        default = ""
+        optional = true
+        
+        [main.auth.password]
+        ask = "Password"
+        type = "password"
+        default = ""
+        optional = true
+
+    [main.dns]
+    name = "DNS"
+
+        [main.dns.dns0]
+        ask = "First resolver"
+        type = "string"
+        default = ""
+
+        [main.dns.dns1]
+        ask = "Second resolver"
+        type = "string"
+        default = ""
