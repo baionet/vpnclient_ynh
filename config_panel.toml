@@ -2,92 +2,132 @@ version = "0.1"
 name = "VPN Client configuration panel"
 
 [main]
-name = "VPN Client Configuration"
-
+name = "Auto-configuration"
 
     [main.service]
     name = "Service"
 
-        [main.service.enabled]
-        ask = "To enable your VPN fill the configuration and start the service <a href='/yunohost/admin/#/services/ynh-vpnclient-checker'>ynh-vpnclient-checker</a>"
+        [main.service.status]
+        ask = "VPN Client is {status} (log are available in Service > ynh-vpnclient)"
         type = "display_text"
+        helpLink = "/yunohost/admin/#/services/ynh-vpnclient"
+
+        [main.service.service_enabled]
+        ask = "VPN active"
+        choices = ["on", "off"]
+        default = "off"
+        helpText = "If you select 'off' your VPN will not run even if you restart your server"
+        source="settings"
 
     [main.cube]
-    name = "Auto Configuration"
+    name = "Cube file"
         
         [main.cube.file]
-        ask = "Update Server CA"
+        ask = "Load a cube File"
         type = "file"
         default = ""
+        helpLink = "https://labriqueinter.net/dotcubefiles.html"
+        helpText = "You can get a cube file from a VPN provider supporting this format (search FFDN Internet Service Providers)"
 
-    [main.vpn]
+[manual]
+name = "Manual configuration"
+    [manual.vpn]
     name = "VPN"
         
-        [main.vpn.host]
-        ask = "Server Address"
+        [manual.vpn.server_name]
+        ask = "Server address"
         type = "string"
         default = ""
+        helpText = "Prefer to put directly the IP address of your VPN server here instead of domain name"
+        source="settings"
         
-        [main.vpn.port]
+        [manual.vpn.server_port]
         ask = "Server Port"
-        type = "string"
+        type = "integer"
         default = "443"
+        source="settings"
         
-        [main.vpn.proto]
+        [manual.vpn.server_proto]
         ask = "Protocol"
         choices = ["udp", "tcp"]
         default = "udp"
+        source="settings"
         
-        [main.vpn.ip6_net]
+        [manual.vpn.server_ip6]
         ask = "Delegated prefix (IPv6)"
         type = "string"
         default = ""
+        optional = true
+        source="settings"
 
-    [main.auth]
+    [manual.auth]
     name = "Authentication"
         
-        [main.auth.server_ca]
+        [manual.auth.server_ca]
         ask = "Update Server CA"
         type = "file"
         default = ""
+        helpText = "You should upload a CA certificate to start"
+        source="/etc/openvpn/keys/ca-server.crt"
         
-        [main.auth.crt]
+        [manual.auth.crt]
         ask = "Update Client Certificate"
         type = "file"
         default = ""
+        optional = true
+        source="/etc/openvpn/keys/user.crt"
         
-        [main.auth.key]
+        [manual.auth.key]
         ask = "Update Client Key"
         type = "file"
         default = ""
         help = "This file begins with -----BEGIN PRIVATE KEY-----"
+        optional = true
+        source="/etc/openvpn/keys/user.key"
         
-        [main.auth.ta]
+        [manual.auth.ta]
         ask = "Upload Shared-Secret"
         type = "file"
         default = ""
+        optional = true
+        source="/etc/openvpn/keys/user_ta.key"
         
-        [main.auth.username]
+        [manual.auth.login_user]
         ask = "Username"
         type = "string"
         default = ""
         optional = true
+        source="settings"
         
-        [main.auth.password]
+        [manual.auth.login_passphrase]
         ask = "Password"
         type = "password"
         default = ""
         optional = true
+        source="settings"
 
-    [main.dns]
+    [manual.dns]
     name = "DNS"
 
-        [main.dns.dns0]
+        [manual.dns.dns0]
         ask = "First resolver"
         type = "string"
         default = ""
+        source="settings"
 
-        [main.dns.dns1]
+        [manual.dns.dns1]
         ask = "Second resolver"
         type = "string"
         default = ""
+        source="settings"
+
+[advanced]
+name = "Advanced configuration"
+
+    [advanced.ovpn]
+    name = ""
+
+        [advanced.ovpn.ovpn]
+        ask = "OVPN template"
+        type = "text"
+        source="/etc/openvpn/client.conf.tpl"
