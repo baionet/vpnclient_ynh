@@ -4,61 +4,67 @@ name = "VPN Client configuration panel"
 [main]
 name = "Auto-configuration"
 
-    [main.service]
-    name = "Service"
-
-        [main.service.status]
-        ask = "VPN Client is {status} (log are available in Service > ynh-vpnclient)"
-        type = "display_text"
-        helpLink = "/yunohost/admin/#/services/ynh-vpnclient"
-
-        [main.service.service_enabled]
-        ask = "VPN active"
+    [main.cube]
+    name = ""
+        
+        [main.cube.warning]
+        ask = "To configure your vpn client, the use of a VPN supporting the .cube file is recommended."
+        type = "warning"
+        
+        [main.cube.service_enabled]
+        ask = "Enable VPN"
+        type = "boolean"
         choices = ["on", "off"]
         default = "off"
-        helpText = "If you select 'off' your VPN will not run even if you restart your server"
-        source="settings"
+        help = "If you select 'off' your VPN will not run even if you restart your server"
 
-    [main.cube]
-    name = "Cube file"
-        
-        [main.cube.file]
+        [main.cube.cube_file]
         ask = "Load a cube File"
         type = "file"
+        optional = true
         default = ""
-        helpLink = "https://labriqueinter.net/dotcubefiles.html"
-        helpText = "You can get a cube file from a VPN provider supporting this format (search FFDN Internet Service Providers)"
-
+        helpLink = "<a href='' target='_BLANK'>See the list of .cube file providers</a><br><a href='https://labriqueinter.net/dotcubefiles.html' target='_BLANK'>Info about cube file format</a>"
+        
 [manual]
 name = "Manual configuration"
+
     [manual.vpn]
     name = "VPN"
+        
+        [manual.vpn.warning]
+        ask = "If you have not a .cube file you can configure your VPN manually.<br/>IMPORTANT: this app only supports fixed and dedicated public ip VPNs."
+        helpLink = "<a href='' target='_BLANK'>See the list of public ip vpn providers</a>"
+        type = "warning"
+
         
         [manual.vpn.server_name]
         ask = "Server address"
         type = "string"
         default = ""
-        helpText = "Prefer to put directly the IP address of your VPN server here instead of domain name"
-        source="settings"
+        optional = true
+        pattern = "^[^/ ]*$"
+        help = "Prefer to put directly the IP address of your VPN server here instead of domain name"
         
         [manual.vpn.server_port]
         ask = "Server Port"
-        type = "integer"
-        default = "443"
-        source="settings"
+        type = "number"
+        default = "1194"
+        min = "1"
+        max = "65535"
+        help = "Default openvpn port is 1194. If your server is connected to a restricted network and if your VPN provider support it, set 443 should work better."
         
         [manual.vpn.server_proto]
         ask = "Protocol"
         choices = ["udp", "tcp"]
         default = "udp"
-        source="settings"
+        help = "UDP is preferred for performance reason. If your server is connected to a restricted network, and UDP does not work, try with TCP."
         
         [manual.vpn.server_ip6]
         ask = "Delegated prefix (IPv6)"
         type = "string"
         default = ""
         optional = true
-        source="settings"
+        pattern = "^[0-9a-fA-F:]+$"
 
     [manual.auth]
     name = "Authentication"
@@ -67,14 +73,14 @@ name = "Manual configuration"
         ask = "Update Server CA"
         type = "file"
         default = ""
-        helpText = "You should upload a CA certificate to start"
+        optional = true
+        help = "You should upload a CA certificate to start"
         source="/etc/openvpn/keys/ca-server.crt"
         
         [manual.auth.crt]
         ask = "Update Client Certificate"
         type = "file"
         default = ""
-        optional = true
         source="/etc/openvpn/keys/user.crt"
         
         [manual.auth.key]
@@ -83,6 +89,7 @@ name = "Manual configuration"
         default = ""
         help = "This file begins with -----BEGIN PRIVATE KEY-----"
         optional = true
+        example = "-----BEGIN PRIVATE KEY-----"
         source="/etc/openvpn/keys/user.key"
         
         [manual.auth.ta]
@@ -97,14 +104,13 @@ name = "Manual configuration"
         type = "string"
         default = ""
         optional = true
-        source="settings"
+        pattern = "^[^/ ]+$"
         
         [manual.auth.login_passphrase]
         ask = "Password"
         type = "password"
         default = ""
         optional = true
-        source="settings"
 
     [manual.dns]
     name = "DNS"
@@ -113,21 +119,21 @@ name = "Manual configuration"
         ask = "First resolver"
         type = "string"
         default = ""
-        source="settings"
+        optional = true
+        pattern = "^([0-9.]{8,16}|[0-9a-fA-F:]+)$"
 
         [manual.dns.dns1]
         ask = "Second resolver"
         type = "string"
         default = ""
-        source="settings"
+        optional = true
+        pattern = "^([0-9.]{8,16}|[0-9a-fA-F:]+)$"
 
-[advanced]
-name = "Advanced configuration"
+    [manual.advanced]
+    name = "Advanced configuration"
 
-    [advanced.ovpn]
-    name = ""
-
-        [advanced.ovpn.ovpn]
+        [manual.advanced.ovpn]
         ask = "OVPN template"
         type = "text"
+        optional = true
         source="/etc/openvpn/client.conf.tpl"
